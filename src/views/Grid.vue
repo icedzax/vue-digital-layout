@@ -140,15 +140,17 @@ export default {
       if (paramSec == 0) {
 
         this.setup.colnum = 13 
-       /*  this.styleLayout.width = "1900px"
-        this.styleLayout.height = "1068px" */
+        this.styleLayout.width = "1900px"
+        this.styleLayout.height = "1068px"
       } else {
+
+        this.styleLayout.width = ""+this.getWindowWidth()+""
+        this.styleLayout.height =  ""+this.getWindowHeight()+""
+
+       
         //this.setup.colnum = 13
-       /*  this.styleLayout.width = "100%"
+      /*   this.styleLayout.width = "100%"
         this.styleLayout.height = "100%"  */
-        
-       
-       
       }
     },
     open: function() {
@@ -161,11 +163,7 @@ export default {
       if (event) {
         //alert(event.target.innerText);
         // this.isOpen = true;
-        this.modalUrl =
-          "http://192.168.201.119/website1/wm_dtl" +
-          this.device +
-          ".aspx?bin=MR8-" +
-          event.target.innerText;
+        this.modalUrl ="http://192.168.201.119/website1/wm_dtl" + this.device + ".aspx?bin=MR8-" + event.target.innerText;
 
         this.windowWidth <= 800
           ? window.open(this.modalUrl, "_blank")
