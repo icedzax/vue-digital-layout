@@ -1,4 +1,4 @@
-# dl
+# Digital Layout WareHouse from Vue and Vuetify
 
 ## Project setup
 ```
