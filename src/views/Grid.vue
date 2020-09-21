@@ -1,13 +1,9 @@
 <template>
-  <div class="Grid">
-    <!-- {{ device + windowWidth }} -->
+  <div class="Grid" >
+<!--     {{ device + windowWidth }} -->
 
     <v-tabs v-model="tab" background-color="sec" color="sec" grow>
-      <!-- <v-card-title class="text-center justify-center py-6" >
-        <h4 class="font-weight-bold display-6 basil--text" @click="secChange(mr, 0)">{{ mr }}</h4>
-      </v-card-title> -->
-
-      <v-tab @click="secChange(mr, 0)">
+      <v-tab @click="secChange(mr, '0')">
         <b>MR8</b>
       </v-tab>
       <v-tab v-for="item in items" :key="item" @click="secChange(mr, item)">
@@ -18,7 +14,8 @@
     <grid-layout
       :layout.sync="layout"
       :col-num="setup.colnum"
-      :row-height="10"
+      :row-height="10.5"
+   
       :is-draggable="false"
       :is-resizable="false"
       :is-mirrored="false"
@@ -44,10 +41,15 @@
     </grid-layout>
     {{layout.x}}
 
+    <v-main>
+       <Dev :secpick ="pick"/> 
+    </v-main>
+
     <transition name="modal">
       <div v-if="isOpen">
-        <div class="overlay" @click.self="isOpen = false">
+        <div class="overlay" @click.self="isOpen = false" >
           <div class="modal">
+            
             <iframe
               :src="modalUrl"
               frameborder="0"
@@ -59,13 +61,15 @@
         </div>
       </div>
     </transition>
+    
   </div>
+
 </template>
 
 <script>
 // @ is an alias to /src
 import VueGridLayout from "vue-grid-layout";
-//import Modal from "@/components/Modal.vue";
+import Dev from "@/components/Dev.vue";
 
 const axios = require("axios");
 const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
@@ -77,6 +81,7 @@ const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
 export default {
   name: "Grid",
   components: {
+    Dev,
     GridLayout: VueGridLayout.GridLayout,
     GridItem: VueGridLayout.GridItem,
   },
@@ -87,8 +92,9 @@ export default {
         colnum: 13,
       },
       styleLayout: {
-          height: "1068px",
-          width: "1900px",
+        
+        zoom : 1 ,
+       //   width: "1900px", */
         "background-color": "rgb(221, 221, 221)",
       },
       tab: null,
@@ -100,9 +106,20 @@ export default {
       windowWidth: 0,
       windowHeight: 0,
       layout: [],
+      pick : "0"
     };
   },
+  computed:{
+
+    singleSec: function () {
+      console.log(this.pick);
+      return this.pick
+    }
+
+  },
   mounted() {
+    
+
     axios
       .get(urlapi + "sec/MR8")
       .then(
@@ -125,32 +142,20 @@ export default {
       this.getWindowHeight();
     });
   },
-  filters: {
-  chanegX: function (value) {
-    if (!value) return ''
-    value = value.toString()
-    return value.charAt(0).toUpperCase() + value.slice(1)
-  }
-},
+  
   methods: {
     secChange: function(paramMR, paramSec) {
+      this.pick = paramSec
       axios
         .get(urlapi + "dl/" + paramMR + "/" + paramSec)
         .then((response) => (this.layout = response.data));
+        
       if (paramSec == 0) {
-
+      //  this.styleLayout.zoom = 1
         this.setup.colnum = 13 
-        this.styleLayout.width = "1900px"
-        this.styleLayout.height = "1068px"
       } else {
+     //   this.styleLayout.zoom = 1.8
 
-        this.styleLayout.width = ""+this.getWindowWidth()+""
-        this.styleLayout.height =  ""+this.getWindowHeight()+""
-
-       
-        //this.setup.colnum = 13
-      /*   this.styleLayout.width = "100%"
-        this.styleLayout.height = "100%"  */
       }
     },
     open: function() {
@@ -191,6 +196,10 @@ export default {
     getWindowWidth() {
       this.windowWidth = document.documentElement.clientWidth;
       this.windowWidth <= 800 ? (this.device = "_mobile") : (this.device = "");
+
+      this.windowWidth <= 1278 ? this.styleLayout.width = "1278px" : this.styleLayout.width = "100%"
+      
+      
     },
 
     getWindowHeight() {
@@ -280,8 +289,7 @@ body {
 }
 
 .detail {
-  /* position: absolute; */
-  /* position: absolute; */
+
   top: 0;
   left: 0;
   width: 100%;
@@ -320,4 +328,7 @@ body {
 .sec {
   background-color: #42b983 !important;
 }
+
+
+
 </style>
