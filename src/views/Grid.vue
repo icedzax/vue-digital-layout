@@ -168,7 +168,7 @@ export default {
       if (event) {
         //alert(event.target.innerText);
         // this.isOpen = true;
-        this.modalUrl ="http://192.168.201.119/website1/wm_dtl" + this.device + ".aspx?bin=MR8-" + event.target.innerText;
+        this.modalUrl ="https://192.168.201.119/website1/wm_dtl" + this.device + ".aspx?bin=MR8-" + event.target.innerText;
 
         this.windowWidth <= 800
           ? window.open(this.modalUrl, "_blank")
