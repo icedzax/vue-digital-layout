@@ -3,7 +3,8 @@
     <v-app id="inspire">
       <v-card>
         <v-card-title>
-          One Mat Code Statistic ({{ this.uid }})
+          One Mat Code Statistic ({{ this.did }})
+          <v-btn v-if="this.did != 'all'" @click="allClick" color="info">ALL</v-btn>
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
@@ -38,7 +39,6 @@
           :sort-by="[getSort()]"
           :sort-desc="[getDesc()]"
           :hide-default-footer="!getDesc()"
-         
           must-sort
           class="elevation-1"
           loading
@@ -60,7 +60,7 @@
 
           <template v-slot:item.upc="{ item }">
             <v-progress-linear
-               color="green"
+              color="green"
               :background-opacity="0.3"
               :buffer-value="100"
               :height="25"
@@ -96,7 +96,7 @@
               <td>{{ numFormat(item.Done) }}</td>
             </v-layout>
           </template>
-<!-- 
+          <!-- 
           <template slot="footer">
             <div class="v-data-table__wrapper">
             <table>
@@ -110,7 +110,6 @@
             </table>
             </div>
           </template> -->
-
         </v-data-table>
       </v-card>
     </v-app>
@@ -123,16 +122,17 @@ const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
 const numeral = require("numeral");
 export default {
   title() {
-    return `OneMatCode — ${this.uid}`;
+    return `OneMatCode — ${this.did}`;
   },
 
   name: "OneMat",
   components: {},
   props: {
-    uid: String,
+  uid: String,
   },
   data() {
     return {
+      did:this.uid,
       search: "",
       progressBar: true,
       onemat: [],
@@ -146,9 +146,9 @@ export default {
         },
         { text: "MatCatName", value: "CATNAME" },
         { text: "ผู้รับผิดชอบ", value: "CATRESP" },
-        { text: "สถานะ", align: "center",value: "status" },
-        { text: "Up to SAP", align: "center",value: "upc" ,width: "12%" },
-        { text: "Confirm", align: "center",value: "progress"  ,width: "12%"},
+        { text: "สถานะ", align: "center", value: "status" },
+        { text: "Up to SAP", align: "center", value: "upc", width: "12%" },
+        { text: "Confirm", align: "center", value: "progress", width: "12%" },
         { text: "เสร็จ", align: "end", value: "Done" },
         { text: "คงเหลือ", align: "end", value: "Wait" },
       ],
@@ -170,8 +170,8 @@ export default {
       });
       rs["sum_wait"] = numeral(sumw).format("0,0");
       rs["sum_done"] = numeral(sumd).format("0,0");
-      rs["sum"] = numeral(sumd+sumw).format("0,0");
-      rs["perc"] = ((100 / (sumw+sumd)) * sumd).toFixed(1);
+      rs["sum"] = numeral(sumd + sumw).format("0,0");
+      rs["perc"] = ((100 / (sumw + sumd)) * sumd).toFixed(1);
       return rs;
     },
     resp: function() {
@@ -180,22 +180,27 @@ export default {
   },
   methods: {
     handleClick(value) {
-      console.log(value.user);
-      // eslint-disable-next-line
-      router.push('onemat')
+      this.did = value.user
+      this.getData(value.user);
+      //this.$router.push({ path: "onemat?uid=" + value.user }).catch(()=>{});
+    },
+    allClick() {
+      this.did = 'all'
+      this.getData('all');
+      //this.$router.push({ path: "onemat?uid=all" }).catch(()=>{});
     },
     numFormat(n) {
       return numeral(n).format("0,0");
     },
     getSort() {
-      if (this.uid == "all") {
+      if (this.did == "all") {
         return "CATRESP";
       } else {
         return "progress";
       }
     },
     getDesc() {
-      if (this.uid == "all") {
+      if (this.did == "all") {
         return false;
       } else {
         return true;
@@ -206,9 +211,13 @@ export default {
       else return "green";
     },
 
-    getData() {
-      axios
-        .get(urlapi + "onemat/" + this.uid)
+    getData(u) {
+      var link = this.did
+      if(u){
+        link = u
+      } 
+       axios
+        .get(urlapi + "onemat/" + link)
         .then((response) => (this.onemat = response.data));
     },
 
@@ -228,12 +237,12 @@ export default {
     },
   },
   mounted() {
-    axios
+    /* axios
       .get(urlapi + "onemat/" + this.uid)
-      .then((response) => (this.onemat = response.data));
+      .then((response) => (this.onemat = response.data)); */
 
     this.interval = setInterval(() => {
-      axios.get(urlapi + "onemat/" + this.uid).then((response) => {
+      axios.get(urlapi + "onemat/" + this.did).then((response) => {
         this.onemat = response.data;
         /*console.log("Did"+ new Date())*/
       });
@@ -241,7 +250,7 @@ export default {
   },
 
   created() {
-    //this.getData();
+    this.getData();
   },
 };
 </script>
