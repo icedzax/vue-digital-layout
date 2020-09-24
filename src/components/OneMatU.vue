@@ -1,10 +1,12 @@
 <template>
-  <v-main >
+  <v-main>
     <v-app id="inspire">
       <v-card>
-        <v-card-title >
+        <v-card-title>
           One Mat Code Statistic ({{ this.did }})
-          <v-btn v-if="this.did != 'all'" @click="allClick" color="info">ALL</v-btn>
+          <v-btn v-if="this.did != 'all'" @click="allClick" color="info"
+            >ALL</v-btn
+          >
           <v-spacer></v-spacer>
           <v-text-field
             v-model="search"
@@ -13,7 +15,7 @@
             single-line
             hide-details
           ></v-text-field>
-          <v-progress-linear  
+          <v-progress-linear
             :background-opacity="0.3"
             :buffer-value="100"
             :height="20"
@@ -22,7 +24,7 @@
             :value="totalAmount['perc']"
             :color="perc2color(totalAmount['perc'])"
           >
-            <div >
+            <div>
               {{ totalAmount["perc"] }}% ({{ totalAmount["sum_done"] }}/{{
                 totalAmount["sum"]
               }})
@@ -30,9 +32,9 @@
           </v-progress-linear>
         </v-card-title>
 
-        <v-data-table  
+        <v-data-table
           fixed-header
-            :headers="header_l"
+          :headers="header_l"
           :items="onemat"
           :items-per-page="15"
           :search="search"
@@ -45,7 +47,7 @@
           loading-text="โหลดอยู่..."
           @click:row="handleClick"
         >
-          <v-progress-linear  
+          <v-progress-linear
             v-show="progressBar"
             slot="progress"
             color="blue"
@@ -53,9 +55,19 @@
           ></v-progress-linear>
 
           <template v-slot:item.status="{ item }">
-            <v-chip :color="getColor(item.status)" dark>{{
-              item.status
-            }}</v-chip>
+            <v-chip
+              :color="getColor(item.status)"
+              dark
+            >
+              <v-avatar  v-if="item.status == 'Completed'" left>
+                <v-icon>mdi-checkbox-marked-circle</v-icon>
+              </v-avatar>
+              <v-avatar  v-else left>
+               <v-icon>mdi-fire</v-icon>
+              </v-avatar>
+
+              {{ item.status }}</v-chip
+            >
           </template>
 
           <template v-slot:item.upc="{ item }">
@@ -128,12 +140,11 @@ export default {
   name: "OneMat",
   components: {},
   props: {
-  uid: String,
+    uid: String,
   },
   data() {
     return {
-      
-      did:this.uid,
+      did: this.uid,
       search: "",
       progressBar: true,
       onemat: [],
@@ -162,12 +173,12 @@ export default {
         },
         { text: "GroupName", value: "matgroupname" },
         { text: "ผู้รับผิดชอบ", value: "CATRESP" },
-        { text: "สถานะ", align: "center",value: "status" },
-        { text: "Up to SAP", align: "center",value: "upc",width: "12%" },
-        { text: "Confirm", align: "center",value: "progress" ,width: "12%"},
-        { text: "เสร็จ", align: "end",value: "Done" },
-        { text: "คงเหลือ", align: "end",value: "Wait" },
-      ]
+        { text: "สถานะ", align: "center", value: "status" },
+        { text: "Up to SAP", align: "center", value: "upc", width: "12%" },
+        { text: "Confirm", align: "center", value: "progress", width: "12%" },
+        { text: "เสร็จ", align: "end", value: "Done" },
+        { text: "คงเหลือ", align: "end", value: "Wait" },
+      ],
     };
   },
   watch: {
@@ -175,17 +186,15 @@ export default {
       this.progressBar = false;
       //console.log(this.onemat);
     },
-  
   },
   computed: {
     totalAmount: function() {
+      this.loadStart();
 
-     this.loadStart()
-     
       var sumw = 0;
       var sumd = 0;
       var rs = new Object();
-      
+
       this.onemat.forEach((e) => {
         sumw += e.Wait;
         sumd += e.Done;
@@ -194,21 +203,20 @@ export default {
       rs["sum_done"] = numeral(sumd).format("0,0");
       rs["sum"] = numeral(sumd + sumw).format("0,0");
       rs["perc"] = ((100 / (sumw + sumd)) * sumd).toFixed(1);
-      this.loadEnd()
+      this.loadEnd();
       return rs;
-      
     },
     resp: function() {
       return "";
     },
-    header_l: function(){
-     if(this.did == 'all'){
-        return this.headers
-     }else{
-       return this.headers_d
-     }
+    header_l: function() {
+      if (this.did == "all") {
+        return this.headers;
+      } else {
+        return this.headers_d;
+      }
     },
-    
+
     getSort: function() {
       if (this.did == "all") {
         return "CATRESP";
@@ -223,52 +231,52 @@ export default {
         return true;
       }
     },
-    
   },
   methods: {
-    allClick(){
-      this.did = 'all'
-      this.getData('all');
+    allClick() {
+      this.did = "all";
+      this.getData("all");
       //this.$router.push({ path: "onemat?uid=all" }).catch(()=>{});
     },
-    loadStart(){
+    loadStart() {
       this.loading = true;
     },
-    loadEnd(){
+    loadEnd() {
       this.loading = false;
     },
-    
+
     handleClick(value) {
-      if(this.did != value.user){
-      this.did = value.user
-      this.getData(value.user);
+      if (this.did != value.user) {
+        this.did = value.user;
+        this.getData(value.user);
       }
 
       //this.$router.push({ path: "onemat?uid=" + value.user }).catch(()=>{});
     },
-    
+
     numFormat(n) {
       return numeral(n).format("0,0");
     },
-    
+
     getColor(status) {
       if (status == "In Progress") return "orange";
       else return "green";
     },
     getData(u) {
       this.progressBar = true;
-      var link = this.did
-      if(u){
-        link = u
-      } 
-      
-       axios
-        .get(urlapi + "onemat/"+link)
-        .then((response) => (this.onemat = response.data ,this.progressBar = false));
+      var link = this.did;
+      if (u) {
+        link = u;
+      }
 
-
+      axios
+        .get(urlapi + "onemat/" + link)
+        .then(
+          (response) => (
+            (this.onemat = response.data), (this.progressBar = false)
+          )
+        );
     },
-
 
     perc2color(perc) {
       var r,
@@ -301,7 +309,7 @@ export default {
 
   created() {
     //console.log("create");
-    
+
     this.getData(this.did);
   },
 };
@@ -317,6 +325,4 @@ export default {
   positon: absolute;
   z-index: 2;
 }
-
-
 </style>
