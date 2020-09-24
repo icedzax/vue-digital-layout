@@ -79,6 +79,9 @@ const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
 ]; */
 
 export default {
+    title() {
+    return `Digital Warehouse`;
+  },
   name: "Grid",
   components: {
     Dev,
@@ -168,7 +171,7 @@ export default {
       if (event) {
         //alert(event.target.innerText);
         // this.isOpen = true;
-        this.modalUrl ="https://192.168.201.119/website1/wm_dtl" + this.device + ".aspx?bin=MR8-" + event.target.innerText;
+        this.modalUrl ="https://webinfo.zubbsteel.com/wm_dtl" + this.device + ".aspx?bin=MR8-" + event.target.innerText;
 
         this.windowWidth <= 800
           ? window.open(this.modalUrl, "_blank")
