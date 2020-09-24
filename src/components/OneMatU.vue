@@ -30,9 +30,9 @@
           </v-progress-linear>
         </v-card-title>
 
-        <v-data-table 
+        <v-data-table  
           fixed-header
-          :headers="header_l"
+            :headers="header_l"
           :items="onemat"
           :items-per-page="15"
           :search="search"
@@ -45,7 +45,7 @@
           loading-text="โหลดอยู่..."
           @click:row="handleClick"
         >
-          <v-progress-linear 
+          <v-progress-linear  
             v-show="progressBar"
             slot="progress"
             color="blue"
@@ -118,7 +118,7 @@
 
 <script>
 const axios = require("axios");
-const urlapi = "https://hook.zubbsteel.com/line-ci/apidev/";
+const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
 const numeral = require("numeral");
 export default {
   title() {
