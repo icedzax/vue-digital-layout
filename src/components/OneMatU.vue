@@ -302,7 +302,7 @@ export default {
   created() {
     //console.log("create");
     
-    this.getData('all');
+    this.getData(this.did);
   },
 };
 </script>
