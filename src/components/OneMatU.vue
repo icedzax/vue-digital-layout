@@ -265,8 +265,6 @@ export default {
   positon: absolute;
   z-index: 2;
 }
-.row-pointer >>> tbody tr :hover {
-  cursor: pointer;
-}
+
 
 </style>
