@@ -18,10 +18,14 @@
             :height="20"
             :width="100"
             :rounded="true"
-            :value="totalAmount"
-            :color="perc2color(totalAmount)"
+            :value="totalAmount['perc']"
+            :color="perc2color(totalAmount['perc'])"
           >
-            <div>{{ totalAmount }}%</div>
+            <div>
+              {{ totalAmount["perc"] }}% ({{ totalAmount["sum_done"] }}/{{
+                totalAmount["sum_wait"]
+              }})
+            </div>
           </v-progress-linear>
         </v-card-title>
 
@@ -39,7 +43,6 @@
           loading
           loading-text="โหลดอยู่..."
           @click:row="handleClick"
-          
         >
           <v-progress-linear
             v-show="progressBar"
@@ -67,7 +70,32 @@
             </v-progress-linear>
           </template>
 
-          
+          <template v-slot:item.Wait="{ item }">
+            <v-layout justify-end>
+              <td>{{ numFormat(item.Wait) }}</td>
+            </v-layout>
+          </template>
+
+          <template v-slot:item.Done="{ item }">
+            <v-layout justify-end>
+              <td>{{ numFormat(item.Done) }}</td>
+            </v-layout>
+          </template>
+<!-- 
+          <template slot="footer">
+            <div class="v-data-table__wrapper">
+            <table>
+              <tbody>
+            <tr class>
+            <td><strong>รวม</strong></td>
+            <td class="text-start">{{ numFormat(totalAmount["sum_done"]) }}</td>
+            <td class="text-end">{{ numFormat(totalAmount["sum_wait"]) }}</td>
+            </tr>
+              </tbody>
+            </table>
+            </div>
+          </template> -->
+
         </v-data-table>
       </v-card>
     </v-app>
@@ -77,8 +105,12 @@
 <script>
 const axios = require("axios");
 const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
-
+const numeral = require("numeral");
 export default {
+  title() {
+    return `OneMatCode — ${this.uid}`;
+  },
+
   name: "OneMat",
   components: {},
   props: {
@@ -101,8 +133,8 @@ export default {
         { text: "ผู้รับผิดชอบ", value: "CATRESP" },
         { text: "สถานะ", value: "status" },
         { text: "ความคืบหน้า", value: "progress" },
-        { text: "เสร็จ", value: "Done" },
-        { text: "คงเหลือ", value: "Wait" },
+        { text: "เสร็จ", align: "end", value: "Done" },
+        { text: "คงเหลือ", align: "end", value: "Wait" },
       ],
     };
   },
@@ -113,20 +145,29 @@ export default {
   },
   computed: {
     totalAmount: function() {
-      var sum = 0;
+      var sumw = 0;
+      var sumd = 0;
+      var rs = new Object();
       this.onemat.forEach((e) => {
-        sum += e.progress;
+        sumw += e.Wait;
+        sumd += e.Done;
       });
-      return ((100 / (this.onemat.length * 100)) * sum).toFixed(1);
+      rs["sum_wait"] = numeral(sumw).format("0,0");
+      rs["sum_done"] = numeral(sumd).format("0,0");
+      rs["perc"] = ((100 / sumw) * sumd).toFixed(1);
+      return rs;
     },
     resp: function() {
-      return ''
+      return "";
     },
   },
   methods: {
     handleClick(value) {
-    console.log(value.user);
-},
+      console.log(value.user);
+    },
+    numFormat(n) {
+      return numeral(n).format("0,0");
+    },
     getSort() {
       if (this.uid == "all") {
         return "CATRESP";

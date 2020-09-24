@@ -12,6 +12,7 @@
     "axios": "^0.19.2",
     "core-js": "^3.6.5",
     "jquery": "^3.5.1",
+    "numeral": "^2.0.6",
     "popper.js": "^1.16.1",
     "sass-loader": "^9.0.2",
     "serialize-javascript": "^4.0.0",

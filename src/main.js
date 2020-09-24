@@ -6,8 +6,12 @@ import axios from "axios";
 import VueAxios from "vue-axios";
 import vmodal from "vue-js-modal";
 import vuetify from "./plugins/vuetify";
+import titleMixin from './titleMixin'
 
 Vue.config.productionTip = false;
+
+
+Vue.mixin(titleMixin)
 
 Vue.use(VueAxios, axios, vmodal);
 

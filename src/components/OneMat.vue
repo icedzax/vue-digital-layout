@@ -18,10 +18,14 @@
             :height="20"
             :width="100"
             :rounded="true"
-            :value="totalAmount"
-            :color="perc2color(totalAmount)"
+            :value="totalAmount['perc']"
+            :color="perc2color(totalAmount['perc'])"
           >
-            <div>{{ totalAmount }}%</div>
+            <div>
+              {{ totalAmount["perc"] }}% ({{ totalAmount["sum_done"] }}/{{
+                totalAmount["sum_wait"]
+              }})
+            </div>
           </v-progress-linear>
         </v-card-title>
 
@@ -64,6 +68,17 @@
             </v-progress-linear>
           </template>
 
+          <template v-slot:item.Wait="{ item }">
+            <v-layout justify-end>
+              <td class="text-xs-right">{{ numFormat(item.Wait) }}</td>
+            </v-layout>
+          </template>
+
+          <template v-slot:item.Done="{ item }">
+            <v-layout justify-end>
+              <td class="text-xs-right">{{ numFormat(item.Done) }}</td>
+            </v-layout>
+          </template>
         </v-data-table>
       </v-card>
     </v-app>
@@ -73,8 +88,12 @@
 <script>
 const axios = require("axios");
 const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
+const numeral = require("numeral");
 
 export default {
+  title() {
+    return `OneMatCode Statistic`;
+  },
   name: "OneMat",
   components: {},
   data() {
@@ -93,8 +112,8 @@ export default {
         { text: "ผู้รับผิดชอบ", value: "CATRESP" },
         { text: "สถานะ", value: "status" },
         { text: "ความคืบหน้า", value: "progress" },
-        { text: "เสร็จ", value: "Done" },
-        { text: "คงเหลือ", value: "Wait" },
+        { text: "เสร็จ", align: "end",value: "Done" },
+        { text: "คงเหลือ", align: "end",value: "Wait" },
       ],
     };
   },
@@ -105,14 +124,20 @@ export default {
   },
   computed: {
     totalAmount: function() {
-      var sum = 0;
+      var sumw = 0;
+      var sumd = 0;
+      var rs = new Object();
       this.onemat.forEach((e) => {
-        sum += e.progress;
+        sumw += e.Wait;
+        sumd += e.Done;
       });
-      return ((100 / (this.onemat.length * 100)) * sum).toFixed(1);
+      rs["sum_wait"] = numeral(sumw).format("0,0");
+      rs["sum_done"] = numeral(sumd).format("0,0");
+      rs["perc"] = ((100 / sumw) * sumd).toFixed(1);
+      return rs;
     },
     resp: function() {
-      return ''
+      return "";
     },
   },
   methods: {
@@ -120,7 +145,9 @@ export default {
       if (status == "In Progress") return "orange";
       else return "green";
     },
-
+    numFormat(n) {
+      return numeral(n).format("0,0");
+    },
     getData() {
       axios
         .get(urlapi + "onemat")
