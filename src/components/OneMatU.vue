@@ -38,6 +38,7 @@
           :sort-by="[getSort()]"
           :sort-desc="[getDesc()]"
           :hide-default-footer="!getDesc()"
+         
           must-sort
           class="elevation-1"
           loading
@@ -146,8 +147,8 @@ export default {
         { text: "MatCatName", value: "CATNAME" },
         { text: "ผู้รับผิดชอบ", value: "CATRESP" },
         { text: "สถานะ", align: "center",value: "status" },
-        { text: "Up to SAP", align: "center",value: "upc" },
-        { text: "Confirm", align: "center",value: "progress" },
+        { text: "Up to SAP", align: "center",value: "upc" ,width: "12%" },
+        { text: "Confirm", align: "center",value: "progress"  ,width: "12%"},
         { text: "เสร็จ", align: "end", value: "Done" },
         { text: "คงเหลือ", align: "end", value: "Wait" },
       ],
