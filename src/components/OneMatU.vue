@@ -23,7 +23,7 @@
           >
             <div>
               {{ totalAmount["perc"] }}% ({{ totalAmount["sum_done"] }}/{{
-                totalAmount["sum_wait"]
+                totalAmount["sum"]
               }})
             </div>
           </v-progress-linear>
@@ -154,7 +154,8 @@ export default {
       });
       rs["sum_wait"] = numeral(sumw).format("0,0");
       rs["sum_done"] = numeral(sumd).format("0,0");
-      rs["perc"] = ((100 / sumw) * sumd).toFixed(1);
+      rs["sum"] = numeral(sumd+sumw).format("0,0");
+      rs["perc"] = ((100 / (sumw+sumd)) * sumd).toFixed(1);
       return rs;
     },
     resp: function() {
@@ -164,6 +165,8 @@ export default {
   methods: {
     handleClick(value) {
       console.log(value.user);
+      // eslint-disable-next-line
+      router.push('onemat')
     },
     numFormat(n) {
       return numeral(n).format("0,0");
