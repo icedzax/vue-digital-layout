@@ -1,8 +1,8 @@
 <template>
-  <v-main>
+  <v-main >
     <v-app id="inspire">
       <v-card>
-        <v-card-title>
+        <v-card-title >
           One Mat Code Statistic ({{ this.did }})
           <v-btn v-if="this.did != 'all'" @click="allClick" color="info">ALL</v-btn>
           <v-spacer></v-spacer>
@@ -13,7 +13,7 @@
             single-line
             hide-details
           ></v-text-field>
-          <v-progress-linear
+          <v-progress-linear  
             :background-opacity="0.3"
             :buffer-value="100"
             :height="20"
@@ -22,7 +22,7 @@
             :value="totalAmount['perc']"
             :color="perc2color(totalAmount['perc'])"
           >
-            <div>
+            <div >
               {{ totalAmount["perc"] }}% ({{ totalAmount["sum_done"] }}/{{
                 totalAmount["sum"]
               }})
@@ -30,22 +30,22 @@
           </v-progress-linear>
         </v-card-title>
 
-        <v-data-table
+        <v-data-table 
           fixed-header
-          :headers="headers"
+          :headers="header_l"
           :items="onemat"
           :items-per-page="15"
           :search="search"
-          :sort-by="[getSort()]"
-          :sort-desc="[getDesc()]"
-          :hide-default-footer="!getDesc()"
+          :sort-by="[getSort]"
+          :sort-desc="[getDesc]"
+          :hide-default-footer="!getDesc"
           must-sort
           class="elevation-1"
           loading
           loading-text="โหลดอยู่..."
           @click:row="handleClick"
         >
-          <v-progress-linear
+          <v-progress-linear 
             v-show="progressBar"
             slot="progress"
             color="blue"
@@ -118,7 +118,7 @@
 
 <script>
 const axios = require("axios");
-const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
+const urlapi = "https://hook.zubbsteel.com/line-ci/apidev/";
 const numeral = require("numeral");
 export default {
   title() {
@@ -132,6 +132,7 @@ export default {
   },
   data() {
     return {
+      
       did:this.uid,
       search: "",
       progressBar: true,
@@ -152,18 +153,39 @@ export default {
         { text: "เสร็จ", align: "end", value: "Done" },
         { text: "คงเหลือ", align: "end", value: "Wait" },
       ],
+      headers_d: [
+        {
+          text: "MatGroup",
+          align: "start",
+          sortable: true,
+          value: "matgroup",
+        },
+        { text: "GroupName", value: "matgroupname" },
+        { text: "ผู้รับผิดชอบ", value: "CATRESP" },
+        { text: "สถานะ", align: "center",value: "status" },
+        { text: "Up to SAP", align: "center",value: "upc",width: "12%" },
+        { text: "Confirm", align: "center",value: "progress" ,width: "12%"},
+        { text: "เสร็จ", align: "end",value: "Done" },
+        { text: "คงเหลือ", align: "end",value: "Wait" },
+      ]
     };
   },
   watch: {
     onemat() {
       this.progressBar = false;
+      //console.log(this.onemat);
     },
+  
   },
   computed: {
     totalAmount: function() {
+
+     this.loadStart()
+     
       var sumw = 0;
       var sumd = 0;
       var rs = new Object();
+      
       this.onemat.forEach((e) => {
         sumw += e.Wait;
         sumd += e.Done;
@@ -172,54 +194,81 @@ export default {
       rs["sum_done"] = numeral(sumd).format("0,0");
       rs["sum"] = numeral(sumd + sumw).format("0,0");
       rs["perc"] = ((100 / (sumw + sumd)) * sumd).toFixed(1);
+      this.loadEnd()
       return rs;
+      
     },
     resp: function() {
       return "";
     },
-  },
-  methods: {
-    handleClick(value) {
-      this.did = value.user
-      this.getData(value.user);
-      //this.$router.push({ path: "onemat?uid=" + value.user }).catch(()=>{});
+    header_l: function(){
+     if(this.did == 'all'){
+        return this.headers
+     }else{
+       return this.headers_d
+     }
     },
-    allClick() {
-      this.did = 'all'
-      this.getData('all');
-      //this.$router.push({ path: "onemat?uid=all" }).catch(()=>{});
-    },
-    numFormat(n) {
-      return numeral(n).format("0,0");
-    },
-    getSort() {
+    
+    getSort: function() {
       if (this.did == "all") {
         return "CATRESP";
       } else {
         return "progress";
       }
     },
-    getDesc() {
+    getDesc: function() {
       if (this.did == "all") {
         return false;
       } else {
         return true;
       }
     },
+    
+  },
+  methods: {
+    allClick(){
+      this.did = 'all'
+      this.getData('all');
+      //this.$router.push({ path: "onemat?uid=all" }).catch(()=>{});
+    },
+    loadStart(){
+      this.loading = true;
+    },
+    loadEnd(){
+      this.loading = false;
+    },
+    
+    handleClick(value) {
+      if(this.did != value.user){
+      this.did = value.user
+      this.getData(value.user);
+      }
+
+      //this.$router.push({ path: "onemat?uid=" + value.user }).catch(()=>{});
+    },
+    
+    numFormat(n) {
+      return numeral(n).format("0,0");
+    },
+    
     getColor(status) {
       if (status == "In Progress") return "orange";
       else return "green";
     },
-
     getData(u) {
+      this.progressBar = true;
       var link = this.did
       if(u){
         link = u
       } 
+      
        axios
-        .get(urlapi + "onemat/" + link)
-        .then((response) => (this.onemat = response.data));
+        .get(urlapi + "onemat/"+link)
+        .then((response) => (this.onemat = response.data ,this.progressBar = false));
+
+
     },
+
 
     perc2color(perc) {
       var r,
@@ -237,6 +286,7 @@ export default {
     },
   },
   mounted() {
+    //console.log("mounted");
     /* axios
       .get(urlapi + "onemat/" + this.uid)
       .then((response) => (this.onemat = response.data)); */
@@ -250,7 +300,9 @@ export default {
   },
 
   created() {
-    this.getData();
+    //console.log("create");
+    
+    this.getData('all');
   },
 };
 </script>
