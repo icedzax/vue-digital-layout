@@ -57,6 +57,20 @@
             }}</v-chip>
           </template>
 
+          <template v-slot:item.upc="{ item }">
+            <v-progress-linear
+               color="green"
+              :background-opacity="0.3"
+              :buffer-value="100"
+              :height="25"
+              :width="100"
+              :rounded="true"
+              :value="item.upc"
+            >
+              <div>{{ item.upc }}%</div>
+            </v-progress-linear>
+          </template>
+
           <template v-slot:item.progress="{ item }">
             <v-progress-linear
               :background-opacity="0.3"
@@ -131,8 +145,9 @@ export default {
         },
         { text: "MatCatName", value: "CATNAME" },
         { text: "ผู้รับผิดชอบ", value: "CATRESP" },
-        { text: "สถานะ", value: "status" },
-        { text: "ความคืบหน้า", value: "progress" },
+        { text: "สถานะ", align: "center",value: "status" },
+        { text: "Up to SAP", align: "center",value: "upc" },
+        { text: "Confirm", align: "center",value: "progress" },
         { text: "เสร็จ", align: "end", value: "Done" },
         { text: "คงเหลือ", align: "end", value: "Wait" },
       ],
