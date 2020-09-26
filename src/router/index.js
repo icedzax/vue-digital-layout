@@ -5,6 +5,7 @@ import VueRouter from "vue-router";
 import Grid from "../views/Grid.vue";
 import Draw from "../views/Draw.vue";
 import OneMat from "../views/OneMat.vue";
+import Kpi from "../views/Kpi.vue";
 
 Vue.use(VueRouter);
 
@@ -29,6 +30,11 @@ const routes = [
     path: "/onemat",
     name: "OneMat",
     component: OneMat
+  },
+  {
+    path: "/kpi",
+    name: "Kpi",
+    component: Kpi
   }
 ];
 
