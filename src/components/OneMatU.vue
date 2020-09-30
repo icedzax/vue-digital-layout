@@ -54,7 +54,7 @@
             indeterminate
           ></v-progress-linear>
 
-          <template v-slot:item.status="{ item }">
+          <template v-slot:[`item.status`]="{ item }">
             <v-chip
               :color="getColor(item.status)"
               dark
@@ -70,7 +70,7 @@
             >
           </template>
 
-          <template v-slot:item.upc="{ item }">
+          <template v-slot:[`item.upc`]="{ item }">
             <v-progress-linear
               color="green"
               :background-opacity="0.3"
@@ -84,7 +84,7 @@
             </v-progress-linear>
           </template>
 
-          <template v-slot:item.progress="{ item }">
+          <template v-slot:[`item.progress`]="{ item }">
             <v-progress-linear
               :background-opacity="0.3"
               :buffer-value="100"
@@ -97,13 +97,13 @@
             </v-progress-linear>
           </template>
 
-          <template v-slot:item.Wait="{ item }">
+          <template v-slot:[`item.Wait`]="{ item }">
             <v-layout justify-end>
               <td>{{ numFormat(item.Wait) }}</td>
             </v-layout>
           </template>
 
-          <template v-slot:item.Done="{ item }">
+          <template v-slot:[`item.Done`]="{ item }">
             <v-layout justify-end>
               <td>{{ numFormat(item.Done) }}</td>
             </v-layout>
@@ -266,7 +266,8 @@ export default {
       this.progressBar = true;
       var link = this.did;
       if (u) {
-        link = u;
+        //link = u;
+        (link == 'ยังไม่ระบุ' ? link = 'x' : link = u)
       }
 
       axios
@@ -322,7 +323,7 @@ export default {
 }
 
 .v-progress-linear__content {
-  positon: absolute;
+  /* position: absolute; */
   z-index: 2;
 }
 </style>
