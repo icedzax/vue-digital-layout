@@ -6,6 +6,11 @@ import Grid from "../views/Grid.vue";
 import Draw from "../views/Draw.vue";
 import OneMat from "../views/OneMat.vue";
 import Kpi from "../views/Kpi.vue";
+import Tel from "../views/Tel.vue";
+import Hh from "../views/Hh.vue";
+import Ppf from "../views/Ppf.vue";
+import Gapi from "../views/Gapi.vue";
+import Sd from "../views/Sd.vue";
 
 Vue.use(VueRouter);
 
@@ -35,7 +40,13 @@ const routes = [
     path: "/kpi",
     name: "Kpi",
     component: Kpi
-  }
+  },
+  {
+    path: "/tel",
+    name: "Tel",
+    component: Tel
+  },
+  
 ];
 
 const router = new VueRouter({
