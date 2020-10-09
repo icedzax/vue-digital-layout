@@ -11,6 +11,7 @@ import Hh from "../views/Hh.vue";
 import Ppf from "../views/Ppf.vue";
 import Gapi from "../views/Gapi.vue";
 import Sd from "../views/Sd.vue";
+import P8 from "../views/P8.vue";
 
 Vue.use(VueRouter);
 
@@ -46,7 +47,33 @@ const routes = [
     name: "Tel",
     component: Tel
   },
-  
+  {
+    path: "/hh",
+    name: "Handheld",
+    component: Hh
+  }
+  ,
+  {
+    path: "/ppf",
+    name: "ppf",
+    component: Ppf
+  },
+  {
+    path: "/gapi",
+    name: "Gapi",
+    component: Gapi
+  },
+  {
+    path: "/sd",
+    name: "Sd",
+    component: Sd
+  }
+  ,
+  {
+    path: "/p8",
+    name: "P8",
+    component: P8
+  }
 ];
 
 const router = new VueRouter({
