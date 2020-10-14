@@ -21,7 +21,6 @@
       :vertical-compact="false"
       :margin="[5, 5]"
       :use-css-transforms="true"
-    
       v-bind:style="styleLayout"
     >
       <div class="Grid-Bin" v-on:click="greet">
@@ -41,7 +40,7 @@
     </grid-layout>
     {{ layout.x }}
 
-  <!--   <v-main>
+    <!--   <v-main>
       <Dev :secpick="pick" />
     </v-main> -->
 
@@ -76,7 +75,7 @@ const urlapi = "https://hook.zubbsteel.com/line-ci/api/";
 ]; */
 
 export default {
-    title() {
+  title() {
     return `Digital Warehouse`;
   },
   name: "Grid",
@@ -92,7 +91,6 @@ export default {
         colnum: 30,
       },
       styleLayout: {
-
         "background-color": "rgb(221, 221, 221)",
       },
       tab: null,
@@ -104,47 +102,49 @@ export default {
       windowWidth: 0,
       windowHeight: 0,
       layout: [],
-      pick : "0"
+      pick: "0",
     };
   },
-  computed:{
-
-    singleSec: function () {
+  computed: {
+    singleSec: function() {
       console.log(this.pick);
-      return this.pick
-    }
-
+      return this.pick;
+    },
   },
   mounted() {
-     axios
+    /*     axios
       .get(urlapi + "sec/WHQ")
       .then(
         (response) => (
           (this.items = response.data.section),
           (this.mr = response.data.storage)
         )
-      );
+      ); */
 
     axios
       .get(urlapi + "dl/WHQ")
       .then((response) => (this.layout = response.data));
 
-     // console.log(this.items);
+    this.interval = setInterval(() => {
+      axios
+        .get(urlapi + "dl/WHQ")
+        .then((response) => {
+        this.onemat = response.data;
+        //console.log("update"+ new Date())
+      });
+    }, 300000);
 
+    // console.log(this.items); 
   },
 
-  create(){
-  
-  },
+  create() {},
 
   methods: {
     secChange: function(paramMR, paramSec) {
-      this.pick = paramSec
+      this.pick = paramSec;
       axios
         .get(urlapi + "dl/" + paramMR + "/" + paramSec)
         .then((response) => (this.layout = response.data));
-
-   
     },
     open: function() {
       this.show = true;
@@ -156,11 +156,17 @@ export default {
       if (event) {
         //alert(event.target.innerText);
         // this.isOpen = true;
-        this.modalUrl ="https://webinfo.zubbsteel.com/wm_dtl" + this.device + ".aspx?bin=WHQ-" + event.target.innerText;
+        this.modalUrl =
+          "https://webinfo.zubbsteel.com/wm_dtl" +
+          this.device +
+          ".aspx?bin=WHQ-" +
+          event.target.innerText;
 
+        this.isOpen = true;
+        /*
         this.windowWidth <= 800
           ? window.open(this.modalUrl, "_blank")
-          : (this.isOpen = true);
+          : (this.isOpen = true); */
       }
     },
 
@@ -173,6 +179,8 @@ export default {
         return "grid-orange";
       } else if (month == -5) {
         return "grid-white";
+      } else if (month == -4) {
+        return "grid-pink";
       } else if (month < 6) {
         return "grid-green";
       } else if (month >= 6 && month <= 12) {
@@ -181,9 +189,7 @@ export default {
         return "grid-red";
       }
     },
-
   },
-
 };
 </script>
 
@@ -199,7 +205,6 @@ body {
   pointer-events: none;
 }
 .vue-grid-item {
-  
   border-radius: 4px;
   cursor: pointer;
   display: flex;
@@ -225,6 +230,9 @@ body {
 }
 .vue-grid-item.grid-red {
   background-color: rgb(204, 75, 75);
+}
+.vue-grid-item.grid-pink {
+  background-color: rgb(255, 129, 234);
 }
 .vue-grid-item.grid-road {
   cursor: default;
