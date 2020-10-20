@@ -21,6 +21,7 @@
       @breakpoint-changed="breakpointChangedEvent"
     >
       <grid-item
+       @click="changeI(item.id,item.i)"
         v-for="item in layout"
         :x="item.x"
         :y="item.y"
@@ -28,6 +29,7 @@
         :h="item.h"
         :i="item.i"
         :key="item.id"
+        :minW="0.5"
         @resize="resizeEvent"
         @move="moveEvent"
         @resized="resizedEvent"
@@ -35,12 +37,16 @@
         @moved="movedEvent"
       >
         {{ item.i }}
+
+
+        
+
       </grid-item>
     </grid-layout>
     <v-data-table
       :headers="headers"
       :items="layout"
-      :items-per-page="5"
+      :items-per-page="200"
       class="elevation-1"
     ></v-data-table>
   </v-main>
@@ -79,7 +85,9 @@ export default {
   computed: {},
   methods: {
     /* eslint-disable */
-
+    changeI(p_i,p_n){
+        console.log(p_i,p_n);
+    },
     maxId() {
       if (this.layout.length == 0) return;
       return this.layout.reduce((a, b) =>

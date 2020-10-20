@@ -99,7 +99,5 @@ export default {
 </script>
 
 <style scoped>
- div{
-   /* zoom: 1.02; */
- }
+
 </style>

@@ -18,11 +18,6 @@
           loading
           loading-text="โหลดอยู่..."
         >
-  
-      
-      
-        
-        
           <v-progress-linear
             v-show="progressBar"
             slot="progress"
@@ -30,7 +25,7 @@
             indeterminate
           ></v-progress-linear>
 
-          <template v-slot:item.name="props">
+          <template v-slot:[`item.name`]="props">
             <v-edit-dialog
               :return-value.sync="props.item.name"
               @save="save(props.item.id)"
@@ -50,10 +45,8 @@
               </template>
             </v-edit-dialog>
           </template>
-          <template v-slot:item.y="props">
-      
-            <v-edit-dialog 
-              
+          <template v-slot:[`item.y`]="props">
+            <v-edit-dialog
               :return-value.sync="props.item.y"
               large
               persistent
@@ -62,13 +55,12 @@
               @open="open"
               @close="close"
             >
-              <div class="yellow lighten-4" >{{ props.item.y }}</div>
+              <div class="yellow lighten-4">{{ props.item.y }}</div>
 
               <template v-slot:input>
                 <div class="mt-4 title">Update YTD</div>
                 <v-text-field
                   v-model="props.item.y"
-                  
                   :rules="[max25chars]"
                   label="Edit"
                   single-line
@@ -79,15 +71,9 @@
             </v-edit-dialog>
           </template>
 
-
-          <template v-slot:item.after="props">
-      
-        
-              <div>{{ numFormat3(props.item.after) }}</div>
-
-          
+          <template v-slot:[`item.after`]="props">
+            <div>{{ numFormat3(props.item.after) }}</div>
           </template>
-
         </v-data-table>
 
         <v-snackbar v-model="snack" :timeout="3000" :color="snackColor">
@@ -140,7 +126,8 @@ export default {
         {
           id: 1,
           name: "KPI-2",
-          desc: "ต้นทุนการแปรสภาพเป็นสินค้าเฉลี่ยของ OCP ไม่รวมยีลด์ (Yield) และค่าใช้จ่ายบริหารและขาย",
+          desc:
+            "ต้นทุนการแปรสภาพเป็นสินค้าเฉลี่ยของ OCP ไม่รวมยีลด์ (Yield) และค่าใช้จ่ายบริหารและขาย",
           base: 0.43,
           low: 0.47,
           high: 0.41,
@@ -150,7 +137,6 @@ export default {
           p: 0,
           cal: "",
         },
-        
       ],
 
       headers: [
@@ -160,7 +146,7 @@ export default {
           sortable: true,
           value: "name",
         },
-         {
+        {
           text: "Desc",
           align: "start",
           sortable: true,
@@ -173,7 +159,7 @@ export default {
         { text: "แต้ม", align: "center", value: "p" },
         { text: "YTD", align: "center", value: "y", class: "yellow lighten-4" },
         { text: "หลัง Weight", align: "center", value: "after" },
-       // { text: "cal", align: "center", value: "cal" },
+        // { text: "cal", align: "center", value: "cal" },
       ],
     };
   },
@@ -200,24 +186,22 @@ export default {
     },
 
     save(e) {
-      
       //this.kpi[myindex].p = this.kpi[myindex].y*2
       //console.log( this.kpi[myindex].p )
-      e == 0  ? this.calPoint(e) : this.icalPoint(e)
-      
+      e == 0 ? this.calPoint(e) : this.icalPoint(e);
 
       this.snack = true;
       this.snackColor = "success";
       this.snackText = "Data saved";
     },
     calPoint(id) {
-      var index = this.kpi.findIndex((x) => x.id == id)
+      var index = this.kpi.findIndex((x) => x.id == id);
       //var p = this.kpi[index].p
-      var y = this.kpi[index].y
-      var w = this.kpi[index].weight
-      var l = this.kpi[index].low
-      var b = this.kpi[index].base
-      var h = this.kpi[index].high
+      var y = this.kpi[index].y;
+      var w = this.kpi[index].weight;
+      var l = this.kpi[index].low;
+      var b = this.kpi[index].base;
+      var h = this.kpi[index].high;
       //var a = this.kpi[index].after
 
       var cal1 = 0;
@@ -226,32 +210,36 @@ export default {
       } else if (b > y && y > l) {
         cal1 = y - l;
       }
-      
-      var cal2 = cal1/(h-b)
-      var cal3 = cal2*2;
+
+      var cal2 = cal1 / (h - b);
+      var cal3 = cal2 * 2;
 
       var target = 0;
       if (y >= h) {
         target = 5;
       } else if (y < h && y >= b) {
-        target = 3+cal3;
+        target = 3 + cal3;
       } else {
-        target = 1+cal3;
+        target = 1 + cal3;
       }
-      
-      this.kpi[index].p = this.numFormat2(target)
-      this.kpi[index].after = this.numFormat2((target*w)/100)
-      this.kpi[index].cal = this.numFormat2(cal1)+"/"+this.numFormat2(cal2)+"/"+this.numFormat2(cal3)
 
+      this.kpi[index].p = this.numFormat2(target);
+      this.kpi[index].after = this.numFormat2((target * w) / 100);
+      this.kpi[index].cal =
+        this.numFormat2(cal1) +
+        "/" +
+        this.numFormat2(cal2) +
+        "/" +
+        this.numFormat2(cal3);
     },
     icalPoint(id) {
-      var index = this.kpi.findIndex((x) => x.id == id)
+      var index = this.kpi.findIndex((x) => x.id == id);
       //var p = this.kpi[index].p
-      var y = this.kpi[index].y
-      var w = this.kpi[index].weight
-      var l = this.kpi[index].low
-      var b = this.kpi[index].base
-      var h = this.kpi[index].high
+      var y = this.kpi[index].y;
+      var w = this.kpi[index].weight;
+      var l = this.kpi[index].low;
+      var b = this.kpi[index].base;
+      var h = this.kpi[index].high;
       //var a = this.kpi[index].after
 
       var cal1 = 0;
@@ -260,23 +248,27 @@ export default {
       } else if (b < y && y < l) {
         cal1 = y - l;
       }
-      
-      var cal2 = cal1/(h-b)
-      var cal3 = cal2*2;
+
+      var cal2 = cal1 / (h - b);
+      var cal3 = cal2 * 2;
 
       var target = 0;
       if (y <= h) {
         target = 5;
       } else if (y > h && y <= b) {
-        target = 3+cal3;
+        target = 3 + cal3;
       } else {
-        target = 1+cal3;
+        target = 1 + cal3;
       }
-      
-      this.kpi[index].p = this.numFormat2(target)
-      this.kpi[index].after = this.numFormat2((target*w)/100)
-      this.kpi[index].cal = this.numFormatx(cal1)+"/"+this.numFormatx(cal2)+"/"+this.numFormatx(cal3)
 
+      this.kpi[index].p = this.numFormat2(target);
+      this.kpi[index].after = this.numFormat2((target * w) / 100);
+      this.kpi[index].cal =
+        this.numFormatx(cal1) +
+        "/" +
+        this.numFormatx(cal2) +
+        "/" +
+        this.numFormatx(cal3);
     },
     cancel() {
       this.snack = true;
@@ -321,7 +313,7 @@ export default {
 }
 
 .v-progress-linear__content {
-  positon: absolute;
+  /* positon: absolute; */
   z-index: 2;
 }
 </style>

@@ -12,6 +12,9 @@ import Ppf from "../views/Ppf.vue";
 import Gapi from "../views/Gapi.vue";
 import Sd from "../views/Sd.vue";
 import P8 from "../views/P8.vue";
+import WPN from "../views/Wpn.vue";
+import Checklist from "../views/Checklist.vue";
+
 
 Vue.use(VueRouter);
 
@@ -74,6 +77,19 @@ const routes = [
     name: "P8",
     component: P8
   }
+  ,
+  {
+    path: "/wpn",
+    name: "WPN",
+    component: WPN
+  }
+  ,{
+    path: "/checklist",
+    name: "checklist",
+    component: Checklist
+  }
+  
+   
 ];
 
 const router = new VueRouter({

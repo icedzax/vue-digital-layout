@@ -88,7 +88,7 @@ export default {
   data() {
     return {
       setup: {
-        colnum: 30,
+        colnum: 15,
       },
       styleLayout: {
         "background-color": "rgb(221, 221, 221)",
@@ -122,12 +122,12 @@ export default {
       ); */
 
     axios
-      .get(urlapi + "dl/WHQ")
+      .get(urlapi + "dl/WPN")
       .then((response) => (this.layout = response.data));
 
     this.interval = setInterval(() => {
       axios
-        .get(urlapi + "dl/WHQ")
+        .get(urlapi + "dl/WPN")
         .then((response) => {
         this.onemat = response.data;
         //console.log("update"+ new Date())
