@@ -122,12 +122,12 @@ export default {
       ); */
 
     axios
-      .get(urlapi + "dl/WHQ")
+      .get(urlapi + "dl/WHQTEST")
       .then((response) => (this.layout = response.data));
 
     this.interval = setInterval(() => {
       axios
-        .get(urlapi + "dl/WHQ")
+        .get(urlapi + "dl/WHQTEST")
         .then((response) => {
         this.onemat = response.data;
         //console.log("update"+ new Date())
@@ -251,6 +251,7 @@ body {
   background-color: rgb(255, 129, 234);
 }
 .vue-grid-item.grid-road {
+
   cursor: default;
   pointer-events: none;
   background-color: rgb(90, 126, 192);

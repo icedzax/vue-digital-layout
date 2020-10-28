@@ -122,12 +122,12 @@ export default {
       ); */
 
     axios
-      .get(urlapi + "dl/WPN")
+      .get(urlapi + "dl/WPNTEST")
       .then((response) => (this.layout = response.data));
 
     this.interval = setInterval(() => {
       axios
-        .get(urlapi + "dl/WPN")
+        .get(urlapi + "dl/WPNTEST")
         .then((response) => {
         this.onemat = response.data;
         //console.log("update"+ new Date())
@@ -180,9 +180,7 @@ export default {
     getWindowWidth() {
       this.windowWidth = document.documentElement.clientWidth;
       this.windowWidth <= 800 ? (this.device = "_mobile") : (this.device = "");
-
-      this.windowWidth <= 1278 ? this.styleLayout.width = "1278px" : this.styleLayout.width = "100%"
-      
+      this.windowWidth <= 700 ? this.styleLayout.width = "700px" : this.styleLayout.width = "100%"
       
     },
 
@@ -210,7 +208,10 @@ export default {
 </script>
 
 <style scoped>
+
 body {
+
+ 
   margin: 0;
 }
 .scrolling-wrapper {
@@ -251,6 +252,8 @@ body {
   background-color: rgb(255, 129, 234);
 }
 .vue-grid-item.grid-road {
+
+
   cursor: default;
   pointer-events: none;
   background-color: rgb(90, 126, 192);
